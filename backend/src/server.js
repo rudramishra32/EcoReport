@@ -28,11 +28,10 @@ if (frontendUrl.hostname === 'localhost') {
 const isProduction = process.env.NODE_ENV === 'production'
 if (!isProduction) frontendOrigins.push(/^http:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?$/)
 const uploadDir = fileURLToPath(new URL('../uploads/', import.meta.url))
-const pool = new Pool({ connectionString: process.env.DATABASE_URL })
-const PgSession = connectPgSimple(session)
-
 if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is required. Copy backend/.env.example to backend/.env and configure it.')
 if (!process.env.SESSION_SECRET || process.env.SESSION_SECRET.length < 32) throw new Error('SESSION_SECRET must contain at least 32 characters.')
+const pool = new Pool({ connectionString: process.env.DATABASE_URL })
+const PgSession = connectPgSimple(session)
 await mkdir(uploadDir, { recursive: true })
 if (isProduction) app.set('trust proxy', 1)
 
@@ -226,7 +225,15 @@ app.use((error, _req, res, _next) => {
   res.status(500).json({ message: 'The server could not complete that request. Check the backend terminal for details.' })
 })
 
-const server = app.listen(port, () => console.log(`EcoReport API listening at http://localhost:${port}`))
+let server
+try {
+  await pool.query('SELECT 1')
+  server = app.listen(port, () => console.log(`EcoReport API listening at http://localhost:${port}`))
+} catch (error) {
+  console.error(`Could not connect to PostgreSQL. Check backend/.env and make sure PostgreSQL is running: ${error.message}`)
+  await pool.end()
+  process.exit(1)
+}
 async function shutdown() { server.close(); await pool.end(); process.exit(0) }
 process.on('SIGINT', shutdown)
 process.on('SIGTERM', shutdown)

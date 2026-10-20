@@ -1,6 +1,8 @@
 import type { Report, User, ReportStatus } from './types'
 
-const base = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '')
+// Local development should work even if Vite was started before .env was created.
+// Deployments can still override this with VITE_API_BASE_URL.
+const base = (import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? 'http://localhost:4000' : '')).replace(/\/$/, '')
 export const apiConfigured = Boolean(base)
 export class ApiError extends Error { constructor(message: string, public status?: number) { super(message) } }
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
