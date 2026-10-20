@@ -1,0 +1,10 @@
+{
+  "[project]/components/eco-map/map-view.tsx [app-client] (ecmascript, next/dynamic entry)": {
+    "id": "[project]/components/eco-map/map-view.tsx [app-client] (ecmascript, next/dynamic entry)",
+    "files": [
+      "static/chunks/node_modules_leaflet_dist_leaflet_1ybdq6vk9u_wd.css",
+      "static/chunks/node_modules_1h3n5ugl3bw0m._.js",
+      "static/chunks/components_eco-map_18cku5x_pq3_j._.js"
+    ]
+  }
+}

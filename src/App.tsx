@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react'
+import { useEffect, useMemo, useState, type FormEvent, type MouseEvent, type ReactNode } from 'react'
 import { CircleMarker, GeoJSON, MapContainer, Popup, TileLayer, ZoomControl, useMap, useMapEvents } from 'react-leaflet'
 import type { GeoJsonObject } from 'geojson'
 import indiaGeoJson from './data/indian-states.json'
@@ -945,7 +945,7 @@ function AuthModal({ mode, setMode, busy, error, apiReady, onClose, onSubmit }: 
   onSubmit: (e: FormEvent<HTMLFormElement>) => void
 }) {
   return (
-    <motion.div className="modal-backdrop" role="presentation" onMouseDown={e => { if (e.target === e.currentTarget) onClose() }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+    <motion.div className="modal-backdrop" role="presentation" onMouseDown={(e: MouseEvent<HTMLDivElement>) => { if (e.target === e.currentTarget) onClose() }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
       <motion.section className="auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-title" initial={{ opacity: 0, y: 20, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 12 }}>
         <button className="modal-close" onClick={onClose} aria-label="Close"><X size={19} /></button>
         <div className="auth-emblem"><Leaf size={22} /></div>
@@ -989,7 +989,7 @@ function ReportModal({ report, canModerate, onClose, onStatus }: {
 }) {
   const updates = report.updates || [{ id: 'created', report_id: report.id, changed_by: report.submitter || 'Community member', old_status: null, new_status: 'Pending' as ReportStatus, note: 'Report shared with the community.', created_at: report.created_at }]
   return (
-    <motion.div className="modal-backdrop" role="presentation" onMouseDown={e => { if (e.target === e.currentTarget) onClose() }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+    <motion.div className="modal-backdrop" role="presentation" onMouseDown={(e: MouseEvent<HTMLDivElement>) => { if (e.target === e.currentTarget) onClose() }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
       <motion.section className="detail-modal" role="dialog" aria-modal="true" aria-labelledby="detail-title" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 12 }}>
         <button className="modal-close" onClick={onClose} aria-label="Close"><X size={19} /></button>
         <div className="detail-topline">
