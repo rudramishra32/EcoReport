@@ -650,6 +650,15 @@ button:disabled { opacity: .65; cursor: wait; }
 .recent-panel, .impact-panel, .chart-panel, .rate-panel { padding: 22px; }
 .panel-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 13px; }
 .panel-head h2 { font-size: 22px; }
+.admin-report-list { border-top: 1px solid var(--line); }
+.admin-report-item { display: flex; align-items: center; gap: 14px; border-bottom: 1px solid var(--line); padding: 12px 4px; }
+.admin-report-main { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; border: 0; background: none; color: inherit; text-align: left; padding: 0; cursor: pointer; }
+.admin-report-main:hover { opacity: .78; }
+.admin-report-main > span:last-child { min-width: 0; }
+.admin-report-main b, .admin-report-main small { display: block; }
+.admin-report-main b { color: var(--forest); font-size: 14px; }
+.admin-report-main small { color: var(--muted); font-size: 12px; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.admin-report-item select { border: 1px solid #dce8dc; border-radius: 10px; padding: 8px 10px; background: #fff; color: var(--forest); font: inherit; font-size: 12px; }
 .impact-icon, .rate-icon {
   width: 34px; height: 34px; background: #edf3e6; border-radius: 11px; color: #5c7e4f; display: grid; place-items: center;
 }

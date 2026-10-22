@@ -356,7 +356,9 @@ export default function App() {
           <AnimatePresence mode="wait">
             <motion.div key={view} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}>
               {view === 'Home' && <Home reports={reports} stats={stats} onNavigate={go} onOpenReport={setDetail} />}
-              {view === 'Dashboard' && <Dashboard reports={reports} stats={stats} onNavigate={go} onOpenReport={setDetail} />}
+              {view === 'Dashboard' && (user?.role === 'admin'
+                ? <AdminDashboard reports={reports} stats={stats} onNavigate={go} onOpenReport={setDetail} onStatus={setStatus} />
+                : <Dashboard reports={reports} stats={stats} onNavigate={go} onOpenReport={setDetail} />)}
               {view === 'Report an Issue' && <ReportForm user={user} onSubmit={submitReport} onLogin={() => openAuth('login')} busy={loading} />}
               {view === 'Reports' && <ReportsView reports={filtered} search={search} setSearch={setSearch} status={filterStatus} setStatus={setFilterStatus} issueType={filterType} setIssueType={setFilterType} onOpen={setDetail} onCreate={() => go('Report an Issue')} />}
               {view === 'Map' && <MapView reports={filtered} issueType={filterType} setIssueType={setFilterType} status={filterStatus} setStatus={setFilterStatus} onOpen={setDetail} />}
@@ -607,6 +609,60 @@ function Dashboard({ reports, stats, onNavigate, onOpenReport }: {
         <p>“When we care enough to notice, we’re already part of the solution.”</p>
         <span>— EcoWatch community</span>
       </div>
+    </div>
+  )
+}
+
+function AdminDashboard({ reports, stats, onNavigate, onOpenReport, onStatus }: {
+  reports: Report[]
+  stats: { total: number; pending: number; progress: number; resolved: number }
+  onNavigate: (v: View) => void
+  onOpenReport: (r: Report) => void
+  onStatus: (report: Report, status: ReportStatus) => void
+}) {
+  return (
+    <div className="page-wrap">
+      <PageTitle
+        eyebrow="ADMIN CONTROL CENTER"
+        title="Admin Dashboard"
+        text="Review community reports and keep environmental issues moving toward resolution."
+        action={<button className="button button-dark" onClick={() => onNavigate('Reports')}><FileText size={16} /> Manage reports</button>}
+      />
+      <div className="welcome-strip">
+        <div className="welcome-mark"><ShieldCheck size={19} /></div>
+        <div>
+          <b>Welcome, administrator.</b>
+          <p>You can review reports and update their progress from this dashboard.</p>
+        </div>
+        <span className="welcome-count"><b>{stats.total}</b> total reports</span>
+      </div>
+      <div className="stat-grid">
+        <StatTile label="All reports" value={stats.total} icon={FileText} tone="green" />
+        <StatTile label="Pending review" value={stats.pending} icon={Clock3} tone="gold" />
+        <StatTile label="In progress" value={stats.progress} icon={Activity} tone="blue" />
+        <StatTile label="Resolved" value={stats.resolved} icon={CheckCircle2} tone="green" />
+      </div>
+      <section className="panel recent-panel">
+        <div className="panel-head">
+          <div><span className="eyebrow">ADMIN QUEUE</span><h2>Recent reports</h2></div>
+          <button className="link-button" onClick={() => onNavigate('Reports')}>View all <ArrowRight size={14} /></button>
+        </div>
+        <div className="admin-report-list">
+          {reports.slice(0, 8).map(report => (
+            <div className="admin-report-item" key={report.id}>
+              <button className="admin-report-main" onClick={() => onOpenReport(report)}>
+                <span className={`issue-symbol issue-${report.type.toLowerCase()}`}>{typeIcon[report.type] || '✳'}</span>
+                <span><b>{report.type} concern</b><small>{report.id} · {report.submitter || 'Community member'} · {report.location}</small></span>
+              </button>
+              <select aria-label={`Update status for ${report.id}`} value={report.status} onChange={event => onStatus(report, event.target.value as ReportStatus)}>
+                <option>Pending</option>
+                <option>In Progress</option>
+                <option>Resolved</option>
+              </select>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   )
 }
